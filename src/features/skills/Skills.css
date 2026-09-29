@@ -1,0 +1,425 @@
+.skills-section {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(5rem, 12vh, 8rem) 5% clamp(2rem, 5vh, 4rem);
+  background-color: transparent;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  position: relative;
+}
+
+/* ─── Shutter Transition ─── */
+.skills-shutter-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.skills-shutter-row {
+  flex: 1;
+  width: 100%;
+  background-color: var(--color-bg);
+  /* Match background */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  /* Slight distinction so slices are visible */
+  will-change: transform;
+}
+
+[data-theme="dark"] .skills-shutter-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Subtle brain watermark — desktop only */
+.skills-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -5%;
+  transform: translateY(-50%);
+  width: 520px;
+  height: 520px;
+  background-image: url('../../assets/images/ai-brain-watercolor.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.skills-bg-splash {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: min(55vw, 850px);
+  height: auto;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  object-fit: contain;
+}
+
+[data-theme="dark"] .skills-bg-splash {
+  opacity: 0.28;
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.skills-container {
+  max-width: 1200px;
+  margin: auto; /* Centers inside the 100svh flex column safely */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(20px, 4vw, 40px);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Left ── */
+.skills-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.skills-header {
+  max-width: 500px;
+  margin-bottom: 1rem;
+}
+
+.skills-header h2 {
+  font-size: clamp(2.5rem, min(5vw, 6vh), 3.5rem);
+  margin-top: 1rem;
+  margin-bottom: clamp(1rem, 2vh, 1.5rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+
+
+.skills-img-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+}
+
+.skills-mind-arrow {
+  position: absolute;
+  bottom: -10px;
+  right: -60px;
+  width: 180px;
+  height: auto;
+  opacity: 0.85;
+}
+
+/* ── Desktop: infinite scroll columns ── */
+.skills-right {
+  flex: 1.2;
+  display: flex;
+  gap: 32px;
+  height: clamp(400px, 65vh, 600px); /* Fits comfortably in viewport */
+  overflow: hidden;
+  position: relative;
+  mask-image: linear-gradient(to bottom,
+      transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom,
+      transparent 0%, black 12%, black 88%, transparent 100%);
+}
+
+.skills-track-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.skills-track-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.inner-up {
+  animation: scrollUp 22s linear infinite;
+}
+
+.inner-down {
+  animation: scrollDown 22s linear infinite;
+  transform: translateY(calc(-50% - 8px));
+}
+
+.skills-track-inner:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollUp {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(calc(-50% - 8px));
+  }
+}
+
+@keyframes scrollDown {
+  from {
+    transform: translateY(calc(-50% - 8px));
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ── Cards (desktop) ── */
+.brand-card {
+  width: 100%;
+  height: 160px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.brand-card:hover {
+  transform: scale(1.03);
+}
+
+.brand-logo-text {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #fff;
+  letter-spacing: -0.01em;
+  text-align: center;
+  padding: 0 16px;
+}
+
+
+/* ══════════════════════════════════════════════
+   MOBILE  ≤ 640px
+   Static 2×4 grid — no internal scroll at all
+   Section ends naturally → page scrolls to next
+   ══════════════════════════════════════════════ */
+@media (max-width: 640px) {
+
+  .skills-section {
+    padding: 60px 5% 50px;
+  }
+
+  .skills-section::before {
+    display: none;
+  }
+
+  .skills-container {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .skills-left {
+    width: 100%;
+    gap: 0;
+  }
+
+  .skills-header {
+    margin-bottom: 4px;
+  }
+
+  .skills-header h2 {
+    font-size: 2.4rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .skills-right {
+    width: 100%;
+    height: 430px;
+    /* Exactly fits 4 cards (4 * 100px + 3 * 10px gap) */
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+  }
+
+  .skills-track-inner {
+    gap: 10px;
+  }
+
+  .brand-card {
+    height: 100px;
+    /* Increased height for better readability */
+    border-radius: 20px;
+  }
+
+  .brand-logo-text {
+    font-size: 0.95rem;
+    padding: 0 8px;
+    text-align: center;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   TABLET  641px – 1024px
+   The 3 scrolling columns were wider than their box (min-content of the
+   card labels + 32px gaps) and the 3rd column was clipped at 768/820/1024.
+   Tighter gaps / card size so all 3 columns fit inside .skills-right.
+   ══════════════════════════════════════════════ */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .skills-container {
+    gap: 24px;
+  }
+
+  .skills-left {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .skills-right {
+    flex: 1.5 1 0;
+    min-width: 0;
+    gap: 12px;
+  }
+
+  .skills-track-col {
+    min-width: 0;
+  }
+
+  .skills-track-inner {
+    gap: 12px;
+    padding: 0;
+  }
+
+  .brand-card {
+    height: 110px;
+    border-radius: 16px;
+  }
+
+  .brand-logo-text {
+    font-size: 0.95rem;
+    padding: 0 6px;
+    text-align: center;
+  }
+}
+
+/* ── AI Brain Animations & Mobile Styles ── */
+.skills-blob-bg {
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  align-self: flex-start;
+  mix-blend-mode: multiply;
+  /* Removes white background seamlessly in light mode */
+}
+
+[data-theme="dark"] .skills-blob-bg {
+  mix-blend-mode: screen;
+  /* Adapts for dark mode if background is dark */
+  filter: invert(1);
+}
+
+.skills-mind-arrow path {
+  stroke: var(--color-text); /* Uses theme color for dark/light mode */
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: drawBrainArrow 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes drawBrainArrow {
+  0% {
+    stroke-dashoffset: 400;
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+/* Desktop Brain (Under text) */
+.mobile-absolute-brain {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  z-index: 10;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  mix-blend-mode: multiply;
+  margin-top: 10px;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .mobile-absolute-brain {
+  mix-blend-mode: screen;
+}
+
+.mobile-absolute-brain .skills-mind-arrow {
+  position: absolute;
+  bottom: 0px;
+  right: -20px;
+}
+
+@media (max-width: 640px) {
+  .mobile-absolute-brain {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    margin-top: 0;
+    /* Brain Reveal Animation */
+    animation: revealBrainMobile 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes revealBrainMobile {
+    0% {
+      opacity: 0;
+      clip-path: circle(0% at center);
+    }
+
+    25% {
+      opacity: 1;
+      clip-path: circle(30% at center);
+    }
+
+    100% {
+      opacity: 1;
+      clip-path: circle(120% at center);
+    }
+  }
+}
+/* ─── Keep the scrolling skill columns inside the visible screen ─── */
+@media (max-width: 640px) {
+  .skills-section { min-height: 100svh; padding-top: clamp(4.5rem, 10vh, 5rem); padding-bottom: 2rem; }
+  .skills-right { height: clamp(240px, calc(100svh - 24rem), 430px); margin-block: 0.75rem; }
+  .skills-header h2 { font-size: clamp(2rem, 9vw, 2.4rem); }
+}
+@media (min-width: 641px) and (max-width: 1024px) {
+  .skills-right { height: min(600px, max(320px, calc(100svh - 12rem))); }
+}
