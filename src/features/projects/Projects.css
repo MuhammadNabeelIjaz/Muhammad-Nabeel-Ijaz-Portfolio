@@ -1,0 +1,963 @@
+.projects-section {
+  position: relative;
+  width: 100%;
+  background-color: transparent;
+  height: 100svh;
+  overflow: hidden;
+  padding-top: clamp(4.5rem, 10vh, 6rem);
+  display: flex;
+  flex-direction: column;
+}
+
+[data-theme="dark"] .projects-section {
+  background-color: transparent;
+}
+
+.projects-section { isolation: isolate; }
+
+.projects-header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 0 2rem;
+  margin-bottom: clamp(0.5rem, 1vh, 1.5rem);
+  flex-shrink: 0;
+}
+
+.projects-header h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+  line-height: 1.1;
+}
+
+.projects-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  z-index: 1;
+  padding: clamp(0.5rem, 2vh, 1.5rem) 4rem 2rem;
+  gap: 3rem;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ─── Left text column ─────────────────────────────────────────── */
+.projects-copy {
+  flex: 0 0 42%;
+  max-width: 42%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  overflow: hidden;
+  height: 100%;
+}
+
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* When the person taps "more" the active text can be taller than the box on small / short screens:
+   let the list scroll inside itself (instead of clipping the last lines) and drop the bottom fade. */
+.projects-list-viewport.has-expanded {
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+/* Each project is a one-row grid. Collapsing = animating that row from 1fr to 0fr, so it shrinks
+   smoothly from its REAL height (no fixed max-height, no fixed pixel offsets). */
+.projects-item {
+  margin-bottom: 0.75rem;
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.5s ease, opacity 0.5s ease, margin-bottom 0.5s ease, padding-bottom 0.5s ease;
+  will-change: opacity;
+}
+
+.projects-item-inner {
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.projects-item.is-hidden {
+  grid-template-rows: 0fr;
+  opacity: 0 !important;
+  margin-bottom: 0 !important;
+  pointer-events: none;
+}
+
+.projects-item-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.projects-num-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.45rem;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+}
+
+.projects-num {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: 0.05em;
+  z-index: 2;
+  transition: font-size 0.3s ease;
+}
+
+.projects-item.is-active .projects-num-wrapper {
+  width: 40px;
+  height: 40px;
+}
+
+.projects-item.is-active .projects-num {
+  font-size: 1rem;
+}
+
+.autoplay-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  z-index: 1;
+}
+
+.autoplay-progress path {
+  fill: none;
+  stroke-width: 2;
+}
+
+.autoplay-progress .circle-bg {
+  stroke: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .autoplay-progress .circle-bg {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+.autoplay-progress .circle-anim {
+  stroke: var(--color-accent);
+  stroke-dasharray: 100, 100;
+  stroke-dashoffset: 100;
+  animation: fillProgress 5s linear forwards;
+}
+
+@keyframes fillProgress {
+  0% {
+    stroke-dashoffset: 100;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.projects-item h3 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.projects-title-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-timeline {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  opacity: 0.85;
+  margin-top: 0.35rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.projects-item-desc {
+  margin-left: 2rem;
+  will-change: height, opacity;
+  padding-bottom: 0.5rem;
+  /* Buffer to prevent GSAP height clipping */
+}
+
+.project-tech-stack {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.tech-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.tech-badge:hover {
+  transform: translateY(-2px);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .tech-badge {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .tech-badge:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Inline truncated paragraph + "more" link on same line */
+.projects-item-desc .desc-wrap {
+  display: block;
+  margin-top: 0.4rem;
+  line-height: 1.6;
+  overflow: hidden;
+}
+
+/* the text + more on same line via a float trick */
+.project-desc-full {
+  color: var(--color-text-muted);
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  line-height: 1.6;
+  margin: 0;
+  min-height: 3.2em;
+}
+
+.project-desc-full.expanded {
+  min-height: auto;
+}
+
+.project-view-more {
+  display: inline;
+  margin-left: 0.2em;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.project-view-more:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+[data-theme="dark"] .project-view-more {
+  color: #aaa;
+}
+
+.view-project-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: none;
+  /* Specifically removing underline */
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  padding: 0.25rem 0;
+}
+
+.view-project-btn:hover {
+  opacity: 0.8;
+  transform: translateX(4px);
+  text-decoration: none;
+  /* Ensure no underline on hover either */
+}
+
+/* Removed dark theme override to keep accent color consistently */
+
+/* ─── Right image column ─────────────────────────────────────────── */
+.projects-visual {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  /* critical: clips anything that wants to overflow */
+}
+
+.projects-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="dark"] .projects-layer {
+  background-color: transparent;
+}
+
+.projects-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* ─── Gallery Layout ─────────────────────────────────── */
+.projects-layer.has-gallery {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.main-image-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 1rem;
+}
+
+.main-project-img-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16/9;
+  max-height: 100%;
+  /* never taller than its parent */
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.card-badges-wrapper {
+  position: absolute;
+  top: clamp(0.5rem, 2vw, 1rem);
+  right: clamp(0.5rem, 2vw, 1.5rem);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+.live-demo-badge,
+.source-code-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  color: white;
+  padding: clamp(0.3rem, 1vw, 0.5rem) clamp(0.6rem, 2vw, 1rem);
+  border-radius: 30px;
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.source-code-badge {
+  background: rgba(255, 255, 255, 0.85);
+  color: black;
+}
+
+.live-demo-badge:hover,
+.source-code-badge:hover {
+  background: var(--color-accent);
+  color: white;
+  transform: scale(1.05);
+}
+
+[data-theme="dark"] .live-demo-badge {
+  background: rgba(255, 255, 255, 0.85);
+  color: black;
+}
+
+[data-theme="dark"] .source-code-badge {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+}
+
+[data-theme="dark"] .live-demo-badge:hover,
+[data-theme="dark"] .source-code-badge:hover {
+  background: var(--color-accent);
+  color: white;
+}
+
+.main-project-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: opacity 0.3s ease;
+  border-radius: 12px;
+}
+
+[data-theme="dark"] .main-project-img-container {
+  border-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.thumbnail-gallery {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+  justify-content: center;
+  width: 100%;
+  padding: 0 1rem;
+  /* reduced padding so 5 items easily fit */
+  margin-bottom: 6rem;
+  /* increased from 4rem to separate from arrows */
+  scrollbar-width: none;
+}
+
+.thumbnail-gallery::-webkit-scrollbar {
+  display: none;
+}
+
+.thumbnail-gallery.is-expanded {
+  justify-content: flex-start;
+  overflow-x: auto;
+  padding: 0 2rem;
+}
+
+.thumbnail-box {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .thumbnail-box {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ─── WIP Card & Mock Styles ───────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.empty-mock {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.02) 25%, rgba(0, 0, 0, 0.06) 50%, rgba(0, 0, 0, 0.02) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite linear;
+  border: 1px dashed rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme="dark"] .empty-mock {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.02) 25%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.02) 75%);
+  border: 1px dashed rgba(255, 255, 255, 0.1) !important;
+}
+
+.wip-card-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.wip-grid-card {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  border: 2px dashed rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  background-color: rgba(255, 255, 255, 0.4);
+  font-family: var(--font-sans);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+[data-theme="dark"] .wip-grid-card {
+  border-color: rgba(255, 255, 255, 0.15);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.thumbnail-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail-box.active {
+  border-color: var(--color-accent);
+  transform: scale(1.05);
+}
+
+.thumbnail-box:not(.active):hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .thumbnail-box:not(.active):hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.thumbnail-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1rem;
+  backdrop-filter: blur(2px);
+}
+
+/* ─── Zoom overlay card ─────────────────────────────────────────── */
+.projects-zoom-card {
+  position: absolute;
+  z-index: 20;
+  top: auto;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(260px, 80%, 380px);
+  background-color: rgba(255, 255, 255, .92);
+  backdrop-filter: blur(14px);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, .1);
+  visibility: hidden;
+  /* GSAP controls via autoAlpha */
+  opacity: 0;
+}
+
+[data-theme="dark"] .projects-zoom-card {
+  background-color: rgba(26, 27, 21, .92);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, .4);
+}
+
+.projects-zoom-card .step-tag {
+  margin-bottom: 0.75rem;
+}
+
+.projects-zoom-card h3 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.projects-zoom-card p {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+
+/* ─── Navigation Arrows ─────────────────────────────────────────── */
+.projects-nav-arrows {
+  position: absolute;
+  bottom: 1rem;
+  right: 50%;
+  transform: translateX(50%);
+  display: flex;
+  gap: 1rem;
+  z-index: 30;
+}
+
+.nav-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+[data-theme="dark"] .nav-arrow {
+  background-color: rgba(26, 27, 21, 0.9);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-arrow:hover:not(.disabled) {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+  transform: scale(1.05);
+}
+
+.nav-arrow.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Expandable description */
+.project-desc-full.expanded {
+  -webkit-line-clamp: unset;
+}
+
+
+/* ─── Short Screen Desktop ──────────────────────────────────────── */
+@media (max-height: 800px) and (min-width: 769px) {
+  .projects-layer.has-gallery {
+    flex-direction: row;
+    padding: 0 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .main-image-wrapper {
+    flex: 1;
+    height: 100%;
+    padding-left: 0;
+    padding-right: 1.5rem;
+    justify-content: flex-end;
+  }
+
+  .thumbnail-gallery {
+    flex-direction: column;
+    width: 64px;
+    margin-bottom: 0;
+    padding: 0;
+    height: auto;
+    justify-content: center;
+  }
+
+  .thumbnail-box {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+/* ─── Tablet ─────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .projects-container {
+    padding: 0 2rem 2rem;
+    gap: 2rem;
+  }
+
+  .projects-copy {
+    flex: 0 0 45%;
+    max-width: 45%;
+  }
+
+  .projects-item h3 {
+    font-size: 2.25rem;
+  }
+}
+
+/* ─── Mobile ─────────────────────────────────────────── */
+@media (max-width: 768px), (max-width: 1024px) and (max-aspect-ratio: 1/1) {
+  .projects-section {
+    padding-top: clamp(4.5rem, 10vh, 6rem);
+  }
+
+  .projects-header {
+    margin-bottom: 0.5rem;
+  }
+
+  .projects-header h2 {
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+  }
+
+  .projects-container {
+    flex-direction: column;
+    padding: 0 1.5rem 1rem;
+    gap: 0;
+    align-items: flex-start;
+  }
+
+  .projects-visual {
+    width: 100%;
+    /* Calculate exact height of 16:9 image (100vw - 3rem padding - 48px thumbs - 0.5rem gap) */
+    height: calc((100vw - 3.5rem - 48px) * 9 / 16);
+    flex: 0 0 calc((100vw - 3.5rem - 48px) * 9 / 16);
+    min-height: 160px;
+    max-height: 400px;
+    max-width: 100%;
+    order: 1;
+    align-items: flex-start;
+    margin-bottom: 3.5rem;
+  }
+
+  .projects-layer {
+    height: 100%;
+  }
+
+  .main-project-img-container {
+    max-width: 100%;
+  }
+
+  .projects-copy {
+    width: 100%;
+    flex: 1 1 0;
+    /* take remaining height in column layout */
+    max-width: 100%;
+    order: 2;
+    align-items: flex-start;
+    margin-top: 1rem;
+    overflow: hidden;
+    /* clip so windowing works on mobile */
+    height: auto;
+    min-height: 0;
+  }
+
+  .projects-list {
+    width: 100%;
+  }
+
+  /* Removed the display:none so all items remain visible like desktop */
+
+  .projects-zoom-card {
+    /* Restore on mobile, positioned slightly lower */
+    width: 82%;
+    top: 82%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    bottom: auto;
+    padding: 1.25rem;
+  }
+
+  .projects-zoom-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .projects-zoom-card p {
+    font-size: 0.85rem;
+  }
+
+  .projects-item h3 {
+    font-size: 1.6rem;
+  }
+
+  .projects-layer.has-gallery {
+    flex-direction: row;
+    padding: 0;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .main-image-wrapper {
+    flex: 1;
+    height: 100%;
+    padding: 0 0.5rem 0 0;
+    justify-content: center;
+  }
+
+  .main-project-img-container {
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+
+  .main-project-img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .wip-card-container {
+    padding: 0;
+  }
+
+  .wip-grid-card {
+    height: auto;
+    aspect-ratio: 16/9;
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .thumbnail-gallery {
+    width: 48px;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  .thumbnail-gallery.is-expanded {
+    justify-content: flex-start;
+    overflow-y: auto;
+    max-height: 250px;
+  }
+
+  .thumbnail-box {
+    width: 48px;
+    height: 48px;
+  }
+
+  .projects-nav-arrows {
+    bottom: -3rem;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: max-content;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .nav-arrow {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.demo-pagination {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-left: 2rem;
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.demo-pagination .pagination-current {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.demo-pagination .pagination-separator {
+  opacity: 0.5;
+}
+
+@media (max-width: 768px), (max-width: 1024px) and (max-aspect-ratio: 1/1) {
+  .demo-pagination {
+    margin-top: 1rem;
+    padding-left: 0;
+  }
+}
+
+/* ─── Short stacked screens (small phones, landscape-ish tablets in stacked mode) ─────────────
+   Every project needs title + tech badges + text + button on screen at once, so tighten the
+   vertical spacing instead of letting the last lines fall out of the box. */
+@media (max-width: 768px) and (max-height: 720px), (max-width: 1024px) and (max-aspect-ratio: 1/1) and (max-height: 720px) {
+  .projects-section {
+    padding-top: 4rem;
+  }
+
+  .projects-header .step-tag {
+    font-size: 0.7rem;
+  }
+
+  .projects-visual {
+    min-height: 120px;
+    margin-bottom: 3rem;
+  }
+
+  .projects-copy {
+    margin-top: 0.5rem;
+  }
+
+  .projects-list-viewport {
+    padding-top: 0.5rem !important;
+  }
+
+  .project-tech-stack {
+    margin-top: 0.4rem;
+  }
+
+  .view-project-btn {
+    margin-top: 0.5rem;
+  }
+
+  .project-desc-full {
+    min-height: 0;
+  }
+
+  .demo-pagination {
+    margin-top: 0.5rem;
+  }
+}
+
+/* ─── Fix: WIP card must not sit under the nav arrows ─── */
+@media (min-width: 1025px) and (min-aspect-ratio: 1/1) {
+  .wip-grid-card { height: calc(100% - 4.5rem); }
+}
