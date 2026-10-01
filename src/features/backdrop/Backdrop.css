@@ -1,0 +1,239 @@
+/* ================================================================
+   Backdrop.css - code-drawn watercolor paper (no video, no images)
+   Sizes use vmin / vmax so every drawing scales with the screen.
+================================================================ */
+
+.bd {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  /* palette */
+  --bd-line: #8b8272;
+  --bd-ink: #26241f;
+  --bd-gold: #c5a56b;
+  --bd-green: #5f9d68;
+  --bd-sage: #84ab93;
+  --bd-sand: #d8c19f;
+  --bd-blue: #94b6d2;
+  --bd-peach: #efb99b;
+  --w-sand: rgba(214, 190, 152, 0.6);
+  --w-sage: rgba(150, 184, 166, 0.55);
+  --w-blue: rgba(150, 184, 214, 0.55);
+  --w-peach: rgba(240, 190, 160, 0.5);
+  --w-green: rgba(130, 175, 130, 0.4);
+
+  /* sizes */
+  --frame: min(94vw, 58vh);
+  --m: clamp(10px, 3vmin, 40px);  /* ink bracket margin from the screen edge */
+  --top: calc(var(--nav-height, 80px) + var(--m) * 0.4); /* top brackets start under the navbar */
+  --m2: clamp(6px, 1.8vmin, 24px); /* paper-mount frame margin */
+}
+@supports (height: 1svh) {
+  .bd { --frame: min(94vw, 58svh); }
+}
+@media (max-aspect-ratio: 1/1) {
+  .bd { --frame: min(84vw, 64svh); }
+}
+
+[data-theme="dark"] .bd {
+  --bd-line: #8f9a92;
+  --bd-ink: #d9d6cc;
+  --bd-gold: #a88f5c;
+  --bd-green: #4d9a80;
+  --bd-sage: #5f8a7c;
+  --bd-sand: #7a6650;
+  --bd-blue: #4f7c9a;
+  --bd-peach: #94614b;
+  --w-sand: rgba(120, 98, 70, 0.28);
+  --w-sage: rgba(70, 120, 105, 0.3);
+  --w-blue: rgba(70, 110, 150, 0.28);
+  --w-peach: rgba(150, 95, 75, 0.24);
+  --w-green: rgba(70, 130, 100, 0.25);
+}
+
+/* colour helpers used by the SVG drawings */
+.bd .f-line { fill: var(--bd-line); }
+.bd .f-ink { fill: var(--bd-ink); }
+.bd .f-gold { fill: var(--bd-gold); }
+.bd .f-green { fill: var(--bd-green); }
+.bd .f-sage { fill: var(--bd-sage); }
+.bd .f-sand { fill: var(--bd-sand); }
+.bd .f-blue { fill: var(--bd-blue); }
+.bd .f-peach { fill: var(--bd-peach); }
+.bd .s-line { stroke: var(--bd-line); }
+.bd .s-ink { stroke: var(--bd-ink); }
+.bd .s-gold { stroke: var(--bd-gold); }
+.bd .s-green { stroke: var(--bd-green); }
+.bd .s-sage { stroke: var(--bd-sage); }
+.bd .s-blue { stroke: var(--bd-blue); }
+.bd .s-peach { stroke: var(--bd-peach); }
+
+/* strokes that are DRAWN by scroll: pathLength="1", hidden until GSAP draws them */
+.bd .bd-draw,
+.bd .bd-frame,
+.bd .bd-drip {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+}
+.bd .bd-frame { stroke-width: 0.28; stroke-opacity: 0.8; }
+
+.bd .bd-dot { opacity: 0; }
+
+/* ── paper ───────────────────────────────────────────────────── */
+.bd-paper {
+  position: absolute;
+  inset: 0;
+}
+.bd-paper::before,
+.bd-paper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+/* large soft mottling, like damp watercolor paper */
+.bd-paper::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='700' height='700'%3E%3Cfilter id='m' x='0' y='0' width='700' height='700' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .008' numOctaves='3' seed='8' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .47 0 0 0 0 .34 0 0 0 .6 -.18'/%3E%3C/filter%3E%3Crect width='700' height='700' filter='url(%23m)'/%3E%3C/svg%3E");
+  background-size: 700px 700px;
+  opacity: 0.55;
+}
+/* fine paper grain */
+.bd-paper::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g' x='0' y='0' width='220' height='220' filterUnits='userSpaceOnUse'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .4 0 0 0 0 .32 0 0 0 .22 -.04'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  opacity: 0.6;
+}
+[data-theme="dark"] .bd-paper::before { opacity: 0.12; }
+[data-theme="dark"] .bd-paper::after { opacity: 0.1; }
+
+/* ── watercolor washes (soft colour clouds) ──────────────────── */
+.bd-wash {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--c), transparent);
+  opacity: var(--o, 1);
+}
+.bd-w-sand { --c: var(--w-sand); --o: 0.7; left: -18vmax; bottom: -22vmax; width: 62vmax; height: 50vmax; }
+.bd-w-sage { --c: var(--w-sage); --o: 0.55; right: -14vmax; top: -18vmax; width: 56vmax; height: 46vmax; }
+
+/* ── scenes ──────────────────────────────────────────────────── */
+.bd-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.1s ease;
+  will-change: opacity;
+}
+.bd[data-scene="hero"] .bd-hero,
+.bd[data-scene="about"] .bd-about,
+.bd[data-scene="portrait"] .bd-portrait,
+.bd[data-scene="edu"] .bd-edu,
+.bd[data-scene="projects"] .bd-projects,
+.bd[data-scene="botanical"] .bd-botanical,
+.bd[data-scene="floral"] .bd-floral {
+  opacity: 1;
+}
+
+/* corner-anchored drawings, sized by the shorter screen side */
+.bd-corner {
+  position: absolute;
+  width: var(--corner, 62vmin);
+  height: var(--corner, 62vmin);
+  overflow: visible;
+}
+.bd-corner--tl { top: 0; left: 0; }
+.bd-corner--tr { top: 0; right: 0; }
+.bd-corner--bl { bottom: 0; left: 0; }
+.bd-corner--br { bottom: 0; right: 0; }
+.bd-corner--wide { --corner: 54vmin; }
+.bd-corner--drips { --corner: 34vmin; left: 17%; }
+@media (max-aspect-ratio: 1/1) { .bd-corner--drips { --corner: 30vmin; left: 42%; } }
+.bd-corner--flower { --corner: min(72vmin, 620px); }
+
+/* sprigs / flowers settle upward when their scene appears */
+.bd-rise { transform: translateY(5vmin); transition: transform 1.8s cubic-bezier(.2, .7, .2, 1); }
+.bd[data-scene="botanical"] .bd-botanical .bd-rise,
+.bd[data-scene="floral"] .bd-floral .bd-rise { transform: none; }
+
+/* ── about: ink brackets ─────────────────────────────────────── */
+.bd-ink {
+  position: absolute;
+  width: clamp(110px, 33vmin, 380px);
+  height: clamp(110px, 33vmin, 380px);
+  overflow: visible;
+}
+.bd-ink path { fill: none; stroke-linecap: round; }
+.bd-ink--tl { top: var(--top); left: var(--m); }
+.bd-ink--tr { top: var(--top); right: var(--m); transform: scaleX(-1); }
+.bd-ink--bl { bottom: var(--m); left: var(--m); transform: scaleY(-1); }
+.bd-ink--br { bottom: var(--m); right: var(--m); transform: rotate(180deg); }
+.bd-w-about-a { --c: var(--w-sand); --o: 0.8; left: -10vmax; top: 18vh; width: 46vmax; height: 40vmax; }
+.bd-w-about-b { --c: var(--w-sage); --o: 0.5; right: -12vmax; bottom: -12vmax; width: 50vmax; height: 40vmax; }
+
+/* ── portrait: square frame centred on the picture ───────────── */
+.bd-frame-box {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: var(--frame);
+  height: var(--frame);
+  transform: translate(-50%, -50%);
+  overflow: visible;
+}
+.bd-w-portrait { --c: var(--w-sand); --o: 0.7; left: 50%; bottom: -26vmax; width: 80vmax; height: 46vmax; transform: translateX(-50%); }
+
+/* ── education ───────────────────────────────────────────────── */
+.bd-w-edu { --c: var(--w-sand); --o: 0.6; left: 20vw; bottom: -20vmax; width: 70vmax; height: 40vmax; }
+/* stay out of the way of the cards and the heading */
+.bd-edu .bd-corner { opacity: 0.85; }
+
+/* ── projects ────────────────────────────────────────────────── */
+.bd-w-projects-a { --c: var(--w-sage); --o: 0.6; right: -14vmax; bottom: -16vmax; width: 56vmax; height: 46vmax; }
+.bd-w-projects-b { --c: var(--w-blue); --o: 0.4; left: -14vmax; top: -12vmax; width: 50vmax; height: 40vmax; }
+
+/* thin hand-mounted frames (a touch askew, like the ones in the old video) */
+.bd-inset {
+  position: absolute;
+  inset: var(--m2);
+  border: 1px solid var(--bd-line);
+  opacity: 0.45;
+}
+.bd-inset--b { inset: calc(var(--m2) + 5px); transform: rotate(-0.25deg); opacity: 0.28; }
+.bd-inset--gold-a { inset: calc(var(--m2) + 2px); border-color: var(--bd-gold); transform: rotate(0.3deg); opacity: 0.85; }
+.bd-inset--gold-b { inset: calc(var(--m2) + 9px); border-color: var(--bd-gold); transform: rotate(-0.45deg); opacity: 0.55; }
+
+/* ── botanical ───────────────────────────────────────────────── */
+.bd-w-bot-a { --c: var(--w-blue); --o: 0.55; left: -16vmax; bottom: -16vmax; width: 56vmax; height: 46vmax; }
+.bd-w-bot-b { --c: var(--w-sage); --o: 0.55; right: -14vmax; top: -14vmax; width: 52vmax; height: 44vmax; }
+.bd-wave { position: absolute; left: 0; bottom: 5vmin; width: 100%; height: 12vmin; overflow: visible; }
+.bd-wave path { fill: none; stroke-linecap: round; }
+
+/* ── floral (contact) ────────────────────────────────────────── */
+.bd-w-fl-blue { --c: var(--w-blue); --o: 0.7; left: 22vw; top: -8vmax; width: 62vmax; height: 40vmax; }
+.bd-w-fl-sage { --c: var(--w-sage); --o: 0.6; right: -14vmax; top: 10vh; width: 46vmax; height: 46vmax; }
+.bd-w-fl-peach { --c: var(--w-peach); --o: 0.6; left: -14vmax; top: 6vh; width: 40vmax; height: 40vmax; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-scene, .bd-rise { transition-duration: 0.01s; }
+}
+
+/* ── education: plain, flat background (same as the other sections) ──
+   While the Education steps are on screen the paper texture and colour washes fade out, so the
+   page colour (--color-bg) shows through and the card text always sits on a clean surface. */
+.bd-paper,
+.bd > .bd-wash {
+  transition: opacity 1.1s ease;
+}
+/* The corner drawings (wireframe solids + green splashes, top-right and bottom-left) stay visible
+   in Education and are sketched in by the scroll (see backdropMotion.js). Only the colour wash
+   of this scene is hidden, so the background stays flat. */
+.bd-edu .bd-wash {
+  opacity: 0;
+}
+
+/* Inline copy of the backdrop (used inside the Achievements window): fills its parent instead of the screen */
+.bd.bd-inline { position: absolute; inset: 0; z-index: 0; }

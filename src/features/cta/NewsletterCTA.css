@@ -1,0 +1,186 @@
+.newsletter-cta-wrapper {
+  background-color: transparent;
+  width: 100%;
+  padding: clamp(5rem, 12vh, 8rem) clamp(1.5rem, 5vw, 5rem) clamp(3rem, 8vh, 6rem);
+}
+
+.newsletter-cta-section {
+  position: relative;
+  width: 100%;
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #ffffff;
+  color: var(--color-text);
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  border-radius: 24px;
+}
+
+[data-theme="dark"] .newsletter-cta-section {
+  background-color: #1a1b15;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+.newsletter-cta-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.newsletter-cta-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.15;
+  filter: grayscale(100%) contrast(150%);
+}
+
+.newsletter-cta-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, transparent 0%, var(--color-bg) 80%);
+}
+
+.newsletter-cta-container {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+}
+
+.newsletter-cta-container h2 {
+  font-family: var(--font-serif);
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.newsletter-cta-lede {
+  font-size: 1.25rem;
+  color: var(--color-text-muted);
+  margin-bottom: 3rem;
+}
+
+.newsletter-cta-actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.newsletter-cta-form {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.newsletter-cta-input-group {
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.03);
+  padding: 0.5rem;
+  border-radius: 8px; /* reduced from 999px */
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .newsletter-cta-input-group {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.newsletter-cta-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  padding: 0 1.5rem;
+  font-size: 1rem;
+  outline: none;
+}
+
+.newsletter-cta-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.newsletter-cta-btn {
+  margin: 0;
+  white-space: nowrap;
+  border-radius: 6px;
+}
+
+.newsletter-cta-subtext {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .newsletter-cta-container h2 {
+    font-size: 2.5rem;
+  }
+  .newsletter-cta-lede {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  .newsletter-cta-input-group {
+    flex-direction: column;
+    background: transparent;
+    border: none;
+    padding: 0;
+    gap: 1rem;
+  }
+  .newsletter-cta-input {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  [data-theme="dark"] .newsletter-cta-input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .newsletter-cta-btn {
+    width: 100%;
+    padding: 1rem;
+  }
+}
+
+/* ─── Fully fluid newsletter (text, input, button) ─── */
+.newsletter-cta-section { padding: clamp(4rem, 10vw, 6rem) clamp(2rem, 14vw, 6rem); min-height: 0; }
+.newsletter-cta-container { width: 100%; max-width: 640px; margin-inline: auto; }
+.newsletter-cta-container h2 { font-family: var(--font-serif); font-size: clamp(2rem, 1.2rem + 3.6vw, 4rem); line-height: 1.1; margin-bottom: clamp(0.9rem, 2vw, 1.5rem); text-wrap: balance; }
+.newsletter-cta-lede { font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.25rem); line-height: 1.6; margin-bottom: clamp(1.5rem, 4vw, 3rem); text-wrap: pretty; }
+.newsletter-cta-form { max-width: min(480px, 100%); }
+.newsletter-cta-input { min-width: 0; font-size: max(16px, 1rem); font-family: var(--font-sans); padding: 0 clamp(0.75rem, 3vw, 1.5rem); }
+.newsletter-cta-btn { font-family: var(--font-sans); font-size: clamp(0.95rem, 0.9rem + 0.3vw, 1.125rem); padding: 0.9rem clamp(1.25rem, 4vw, 2rem); }
+.newsletter-cta-subtext { font-size: clamp(0.8rem, 0.75rem + 0.2vw, 0.9rem); line-height: 1.5; }
+@media (max-width: 768px) {
+  .newsletter-cta-wrapper { padding-inline: 1rem; padding-top: clamp(3rem, 8vh, 4.5rem); }
+  .newsletter-cta-container h2 { font-size: clamp(2rem, 9vw, 2.6rem); }
+  .newsletter-cta-input { padding: 0.95rem 1rem; }
+  .newsletter-cta-btn { width: 100%; }
+}
+
+/* ─── Phones/tablets: keep clear space between the card edge and its content (input, button, text) ─── */
+@media (max-width: 768px) {
+  .newsletter-cta-wrapper { padding-inline: 0.5rem; }
+  .newsletter-cta-section { padding: 1.5rem clamp(1.25rem, 6vw, 2rem); }
+  .newsletter-cta-form,
+  .newsletter-cta-input-group { max-width: 100%; box-sizing: border-box; }
+  .newsletter-cta-input { box-sizing: border-box; width: 100%; }
+}

@@ -1,0 +1,994 @@
+/* ================================================================
+   HeroSequence.css
+   Unified hero + project-scroll section.
+   Animation is controlled exclusively by GSAP (HeroSequence.jsx).
+   CSS only defines layout, initial positioning, and visual identity.
+================================================================ */
+
+/* ─── Container ─────────────────────────────────────────────────── */
+.hero-container {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+/* ─── Mesh-gradient orbs ────────────────────────────────────────── */
+.hero-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+  mix-blend-mode: multiply;
+  /* The clip itself is nearly white, so stretch its tones (whites stay white, the watercolour
+     patches get clearly darker) - raise/lower the two numbers for a stronger/softer effect. */
+  filter: brightness(0.643) contrast(3.9);
+  transition: filter 0.5s ease, opacity 0.5s ease;
+}
+
+[data-theme="dark"] .hero-bg-video {
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  filter: invert(1) hue-rotate(180deg) brightness(1.3) contrast(1.1);
+}
+
+.hero-portrait-video {
+  filter: blur(5px);
+  transform: scale(1.04);
+  transition: filter 0.5s ease;
+}
+
+[data-theme="dark"] .hero-portrait-video {
+  filter: blur(5px) invert(1) hue-rotate(180deg) brightness(1.2) contrast(1.1);
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.65;
+  animation: hero-drift 20s infinite alternate ease-in-out;
+}
+
+.hero-orb-1 {
+  width: 60vw;
+  height: 60vw;
+  top: -10vh;
+  right: -10vw;
+  background: radial-gradient(circle, rgba(162, 185, 178, .7) 0%, rgba(162, 185, 178, 0) 70%);
+  animation-delay: 0s;
+}
+
+.hero-orb-2 {
+  width: 50vw;
+  height: 50vw;
+  bottom: -20vh;
+  left: -10vw;
+  background: radial-gradient(circle, rgba(230, 218, 206, .6) 0%, rgba(230, 218, 206, 0) 70%);
+  animation-delay: -5s;
+}
+
+.hero-orb-3 {
+  width: 40vw;
+  height: 40vw;
+  top: 30vh;
+  left: 20vw;
+  background: radial-gradient(circle, rgba(200, 215, 210, .5) 0%, rgba(200, 215, 210, 0) 70%);
+  animation-delay: -10s;
+}
+
+@keyframes hero-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(5vw, 5vh) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-5vw, 10vh) scale(0.9);
+  }
+
+  100% {
+    transform: translate(-10vw, -5vh) scale(1.05);
+  }
+}
+
+/* ─── Hero image ────────────────────────────────────────────────── */
+/* GSAP controls opacity and transform (xPercent, yPercent).        */
+/* CSS only sets the anchor layout point.                           */
+.hero-plate {
+  position: absolute;
+  top: 50%;
+  /* Anchor point. GSAP applies yPercent:-50 */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Start centered so it doesn't jump */
+  right: auto;
+  max-width: 46vw;
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  z-index: 5;
+  opacity: 0;
+  /* Hide initially to prevent layout flash before GSAP kicks in */
+  will-change: transform, opacity;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  /* NO transform: translate here. GSAP handles it to avoid jumps */
+}
+
+/* ─── Hero copy layer ───────────────────────────────────────────── */
+.hero-hero-content {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-start;
+  /* Prevent top overflow */
+  padding: 0 8rem;
+  /* Increased padding */
+  padding-top: calc(var(--nav-height) + 1.5rem);
+  max-width: 1440px;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  /* centres the max-width container */
+}
+
+.hero-hero-left {
+  width: 50%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto 0;
+  /* Centers vertically but respects top padding */
+}
+
+/* ─── Typography tokens ─────────────────────────────────────────── */
+.hero-tag {
+  color: var(--color-accent);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: clamp(0.5rem, 2vh, 1.5rem);
+  display: block;
+}
+
+.hero-lede h1 {
+  font-size: clamp(2rem, min(4.5vw, 6vh), 4.5rem);
+  line-height: 1.1;
+  margin-bottom: clamp(0.5rem, 2vh, 1.25rem);
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+}
+
+.hero-lede>p {
+  font-size: clamp(0.9rem, min(1.5vw, 2.5vh), 1.125rem);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  margin-bottom: clamp(0.75rem, 3vh, 1.75rem);
+  max-width: 90%;
+}
+
+/* ─── CTA buttons ───────────────────────────────────────────────── */
+.hero-cta-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 0.875rem 1.75rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  font-size: 0.9375rem;
+}
+
+.btn-primary {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--color-text);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+}
+
+[data-theme="dark"] .btn-secondary {
+  background-color: #1a1b15;
+  color: #f6f4f0;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .1);
+}
+
+/* ─── Misc hero text ────────────────────────────────────────────── */
+.hero-note {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-social-links {
+  display: flex;
+  gap: 0.875rem;
+  margin-top: 0.25rem;
+  margin-bottom: clamp(0.5rem, 3vh, 2rem);
+}
+
+.hero-social-links a {
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.hero-social-links a:hover {
+  transform: translateY(-2px);
+}
+
+/* ─── Stats row ─────────────────────────────────────────────────── */
+.hero-stats {
+  display: flex;
+  gap: 2.5rem;
+  border-top: 1px solid var(--color-border, rgba(0, 0, 0, .1));
+  padding-top: 1.75rem;
+}
+
+[data-theme="dark"] .hero-stats {
+  border-top-color: rgba(255, 255, 255, .08);
+}
+
+.stat-item h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, min(3vw, 4vh), 2.25rem);
+  color: var(--color-text);
+  margin-bottom: 0.2rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.stat-item span {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+/* ─── Scroll cue ────────────────────────────────────────────────── */
+.hero-scroll-cue {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.875rem;
+  margin-top: 2rem;
+  font-size: clamp(0.5rem, 0.85vw, 0.6875rem);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.hero-scroll-line {
+  width: 48px;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left;
+  animation: hero-scroll-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes hero-scroll-pulse {
+
+  0%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: scaleX(0.5);
+    opacity: 1;
+  }
+}
+
+/* ─── About Me (Intermediate Phase) ─────────────────────────────── */
+.hero-about-section {
+  position: absolute;
+  top: 50%;
+  /* Centred with auto margins. Vertical centring (yPercent:-50) is applied by GSAP. */
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  text-align: center;
+  width: 90%;
+  max-width: 600px;
+  pointer-events: none;
+}
+
+.hero-about-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: var(--color-text);
+  margin-bottom: 0.75rem;
+  line-height: 1.1;
+}
+
+
+.hero-about-desc {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.hero-about-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.hero-about-char {
+  display: inline-block;
+  opacity: 0;
+}
+
+/* Desktop: the About text sits on the LEFT, the picture is on the right,
+   so the two never overlap. */
+@media (min-width: 1025px),
+(min-width: 769px) and (min-aspect-ratio: 10001/10000) {
+  .hero-about-section {
+    /* keep the card clear of the picture on the right */
+    left: clamp(96px, 16vw, 320px);
+    right: auto;
+    margin: 0;
+    width: min(500px, 34vw);
+    max-width: none;
+  }
+}
+
+/* Stacked layout: the About text sits over the picture → soft light halo keeps it readable */
+@media (max-width: 768px),
+(max-width: 1024px) and (max-aspect-ratio: 1/1) {
+
+  .hero-about-heading,
+  .hero-about-desc {
+    text-shadow: 0 0 10px rgba(246, 244, 240, 0.95), 0 0 3px rgba(246, 244, 240, 0.9);
+  }
+
+  .hero-about-desc {
+    color: #3f4138;
+  }
+}
+
+/* ─── Section Title (Animated on scroll) ────────────────────────── */
+.hero-section-title {
+  position: absolute;
+  top: calc(var(--nav-height) + 0.5rem);
+  left: calc(clamp(2rem, 4vw, 5rem) + 1rem);
+  /* Matched with the card's left edge */
+  z-index: 10;
+  pointer-events: none;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 4rem);
+  color: var(--color-text);
+}
+
+.hero-st-heading {
+  display: flex;
+  overflow: hidden;
+}
+
+.hero-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+/* ─── Project cards layer ───────────────────────────────────────── */
+.hero-projects-content {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  display: grid;
+  align-items: center;
+  justify-items: start;
+  padding: 0 clamp(2rem, 4vw, 5rem);
+  /* less empty space on the left for large screens */
+  padding-top: var(--nav-height);
+  max-width: none;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.hero-card {
+  grid-column: 1;
+  grid-row: 1;
+  position: relative;
+  /* No background on desktop/tablet — content sits directly over layout */
+  background-color: transparent;
+  backdrop-filter: none;
+  padding: 2.5rem 0;
+  margin-left: 1rem;
+  /* Indent slightly under heading */
+  box-shadow: none;
+  max-width: 420px;
+  width: 100%;
+  border-radius: 0;
+  flex-shrink: 0;
+  align-self: center;
+  pointer-events: auto;
+}
+
+.hero-card:nth-child(2) {
+  justify-self: end;
+}
+
+[data-theme="dark"] .hero-card {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.hero-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.hero-card-header .hero-tag {
+  margin-bottom: 0;
+  font-size: 1.1rem;
+}
+
+.hero-num {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+}
+
+.hero-card h3 {
+  font-size: 1.875rem;
+  margin-bottom: 0.625rem;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.hero-card>p {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+/* ─── Extra Large screens (≥ 1920 px) ───────────────────────────── */
+@media (min-width: 1920px) {
+  .hero-plate {
+    width: 800px;
+    max-width: none;
+  }
+}
+
+/* ─── Large screens (≥ 1440 px) ────────────────────────────────── */
+@media (min-width: 1440px) and (max-width: 1919px) {
+  .hero-plate {
+    max-width: 44vw;
+  }
+}
+
+/* ─── Desktop: shift odd education cards (01, 03) to the right ──── */
+@media (min-width: 1025px) {
+  .hero-projects-content {
+    padding-left: clamp(6rem, 12vw, 14rem);
+  }
+
+  .hero-card:not(:nth-child(2)) {
+    margin-left: clamp(2rem, 4vw, 5rem);
+  }
+}
+
+/* ─── Tablet (≤ 1024px) ────────────────────────────────────────── */
+@media (max-width: 1024px) {
+
+  .hero-hero-content,
+  .hero-projects-content {
+    padding: 0 5rem;
+    padding-top: var(--nav-height);
+  }
+
+  .hero-section-title {
+    left: 5rem;
+  }
+
+  .hero-hero-left {
+    width: 55%;
+  }
+
+  .hero-plate {
+    max-width: 44vw;
+    width: auto;
+    transform: none;
+    /* position is fully owned by GSAP (xPercent:-50) */
+  }
+
+  .hero-projects-content {
+    gap: 2rem;
+    padding: 0 5rem;
+    padding-top: var(--nav-height);
+  }
+
+  .hero-card {
+    padding: 2rem;
+  }
+
+  .hero-lede h1 {
+    font-size: clamp(2.5rem, 3.5vw, 3.75rem);
+  }
+
+  .hero-scroll-cue {
+    margin-top: 1.25rem;
+  }
+}
+
+/* ─── Stacked layout: phones (≤ 768 px) + portrait tablets ─────── */
+@media (max-width: 768px),
+(max-width: 1024px) and (max-aspect-ratio: 1/1) {
+  .hero-container {
+    height: 100svh;
+  }
+
+  /* ── Hero copy ── */
+  .hero-hero-content {
+    padding: 0 1.25rem;
+    padding-top: calc(var(--nav-height) + 0.5rem);
+    padding-bottom: 1rem;
+    align-items: flex-start;
+    overflow: hidden;
+  }
+
+  .hero-hero-left {
+    margin: 0;
+    /* start right under the navbar (was auto = centred → big empty gap on top) */
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Fluid type for mobile — scales with viewport width */
+  .hero-tag {
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-lede h1 {
+    font-size: clamp(1.75rem, 7.5vw, 2.25rem);
+    line-height: 1.15;
+    margin-bottom: 0.875rem;
+  }
+
+  .hero-lede>p {
+    max-width: 100%;
+    font-size: clamp(0.875rem, 3.8vw, 1rem);
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-cta-group {
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+  }
+
+  .hero-note {
+    margin-bottom: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .hero-social-links {
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  /* ── Stats ── */
+  .hero-stats {
+    gap: 1.25rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-top: 1.25rem;
+  }
+
+  .stat-item h2 {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+
+  .stat-item span {
+    font-size: 0.75rem;
+  }
+
+  /* ── Scroll cue ── */
+  .hero-scroll-cue {
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .hero-scroll-line {
+    width: 28px;
+  }
+
+  /* ── Hero image ── */
+  .hero-plate {
+    position: absolute;
+    top: auto;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Start perfectly centered horizontally */
+    right: auto;
+    /* NO transform: translate here. GSAP uses xPercent:-50 */
+    max-width: 95vw;
+    max-height: 55vh;
+    opacity: 0;
+    /* Keep it invisible until GSAP paints to avoid jumping */
+  }
+
+  /* ── Project cards ── */
+  .hero-projects-content {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    align-items: center;
+    justify-items: center;
+    padding: 1.25rem;
+    padding-top: calc(var(--nav-height) + 1rem);
+    gap: 0;
+  }
+
+  .hero-projects-header {
+    grid-row: 1;
+    grid-column: 1;
+    position: static;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .hero-card {
+    grid-row: 2;
+    grid-column: 1;
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    transform: none;
+    max-width: 100%;
+    width: 100%;
+    padding: 1.5rem;
+    margin-left: 0;
+    margin-bottom: 1.5rem;
+    align-self: end;
+    /* Align to the bottom of the screen */
+    /* No card background on mobile: text sits directly on the soft paper wash */
+    background-color: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0.5rem 0.5rem 0.25rem;
+    text-shadow: 0 0 10px rgba(246, 244, 240, 0.9), 0 0 3px rgba(246, 244, 240, 0.85);
+  }
+
+  [data-theme="dark"] .hero-card {
+    background-color: transparent;
+    box-shadow: none;
+    text-shadow: none;
+  }
+
+  .hero-card h3 {
+    font-size: clamp(1.25rem, 5vw, 1.5rem);
+  }
+
+  .hero-card>p {
+    font-size: 0.875rem;
+  }
+}
+
+/* ─── Portrait phase: typed name under the centred picture ──────── */
+.hero-portrait-name {
+  position: absolute;
+  top: 86.5%;
+  left: 50%;
+  /* centred by GSAP (xPercent:-50) */
+  z-index: 10;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.hero-portrait-text {
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 3.4vw, 3.25rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  color: #2f7566;
+  /* fallback */
+  filter: drop-shadow(0 1px 8px rgba(246, 244, 240, 0.85));
+  position: relative;
+  display: inline-block;
+}
+
+.hero-portrait-sizer {
+  visibility: hidden;
+}
+
+.hero-portrait-typed {
+  /* soft teal → olive gradient (not black), readable on the pale paper */
+  width: 100%;
+  background: linear-gradient(90deg, #2a6b5d 0%, #3d8a76 55%, #6f8d4f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+}
+
+@media (max-width: 768px),
+(max-width: 1024px) and (max-aspect-ratio: 1/1) {
+  .hero-portrait-name {
+    top: 86.5%;
+  }
+
+  .hero-portrait-text {
+    font-size: clamp(1.4rem, 6.6vw, 2rem);
+  }
+}
+
+/* ─── Short phones (≤ 700px tall): tighter hero copy so the picture keeps a good size ─── */
+@media (max-width: 768px) and (max-height: 700px),
+(max-width: 1024px) and (max-aspect-ratio: 1/1) and (max-height: 700px) {
+
+  .hero-scroll-cue,
+  .hero-note {
+    display: none;
+  }
+
+  .hero-lede h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-lede>p {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-cta-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-social-links {
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-stats {
+    padding-top: 0.75rem;
+  }
+}
+
+
+/* ─── Education cards: aligned text + theme-aware colours ─────────── */
+.hero-card {
+  text-align: left;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.hero-card .hero-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-content: flex-start;
+}
+
+.edu-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0 0 0.625rem 0;
+  text-align: left;
+}
+
+.edu-card-logo {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: 50%;
+  background-color: #ffffff;
+  padding: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.edu-card-title-text {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.hero-card>p.edu-card-desc {
+  color: var(--color-text);
+}
+
+.hero-card>p.edu-card-meta {
+  margin-top: 0.35rem;
+  color: var(--color-text-muted);
+}
+
+.hero-card>p.edu-card-details {
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.edu-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+[data-theme="dark"] .hero-card,
+[data-theme="dark"] .hero-card h3,
+[data-theme="dark"] .hero-card .edu-card-title-text,
+[data-theme="dark"] .hero-card>p.edu-card-desc {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .hero-card>p.edu-card-meta {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+[data-theme="dark"] .hero-card .hero-tag {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="dark"] .hero-card .hero-num,
+[data-theme="dark"] .edu-card-link {
+  color: var(--color-accent-hover);
+}
+
+@media (max-width: 1024px) {
+  .hero-card {
+    max-width: min(420px, 100%);
+  }
+}
+
+@media (max-width: 768px),
+(max-width: 1024px) and (max-aspect-ratio: 1/1) {
+  .hero-card {
+    text-align: left;
+  }
+
+  .edu-card-logo {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ─── Education on phones + portrait tablets: bottom-centre, centred text ─── */
+@media (max-width: 768px),
+(max-width: 1024px) and (max-aspect-ratio: 1/1) {
+  .hero-projects-content {
+    justify-items: center;
+    align-items: end;
+    padding-bottom: clamp(1.25rem, 5vh, 3rem);
+  }
+
+  .hero-card {
+    align-self: end;
+    justify-self: center;
+    margin: 0 auto;
+    width: min(100%, 520px);
+    max-width: min(100%, 520px);
+    text-align: center;
+    padding: 0.5rem 0.75rem 0.25rem;
+  }
+
+  .hero-card .hero-card-header {
+    justify-content: center;
+  }
+
+  .edu-card-title {
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .edu-card-title-text {
+    flex: 0 1 auto;
+    text-align: center;
+  }
+
+  .edu-card-logo {
+    width: 48px;
+    height: 48px;
+  }
+
+  .hero-card>p {
+    text-align: center;
+  }
+
+  .hero-card .edu-card-link {
+    justify-content: center;
+    margin-inline: auto;
+  }
+
+  .hero-section-title {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) and (max-aspect-ratio: 1/1) {
+  .hero-card {
+    width: min(100%, 560px);
+    max-width: 560px;
+  }
+
+  .hero-card h3 {
+    font-size: 1.6rem;
+  }
+
+  .hero-card>p {
+    font-size: 1rem;
+  }
+}

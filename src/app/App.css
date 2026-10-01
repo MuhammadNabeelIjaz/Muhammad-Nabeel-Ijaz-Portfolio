@@ -1,0 +1,49 @@
+.landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing-main {
+  flex: 1;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+/* Sections Base */
+section {
+  position: relative;
+  width: 100%;
+}
+
+/* ── Global Background Video ── */
+.global-bg-container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.global-bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  mix-blend-mode: multiply;
+}
+
+.global-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-bg);
+  /* Opacity is animated via GSAP in App.jsx */
+  transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .global-bg-video {
+  opacity: 0.6; /* Lower opacity for subtlety */
+  filter: invert(1) hue-rotate(180deg); /* Inverts light background to dark, preserving warm hues */
+  mix-blend-mode: screen; /* Drops the newly dark background, leaving light texture */
+}

@@ -1,0 +1,519 @@
+.milestones-section {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(5rem, 12vh, 8rem) 2rem clamp(2rem, 5vh, 4rem);
+  background-color: transparent;
+  overflow: hidden;
+}
+
+/* ── Section background image ── */
+.milestones-bg-container {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.milestones-bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+}
+
+[data-theme="dark"] .milestones-bg-image {
+  opacity: 0.35;
+  filter: invert(1) hue-rotate(180deg);
+  mix-blend-mode: screen;
+}
+
+.milestones-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1440px;
+  margin: auto; /* Safely centers within the padded 100svh */
+}
+
+.milestones-header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(2rem, 5vh, 4rem);
+  gap: 2rem;
+}
+
+.milestones-header {
+  max-width: 600px;
+  flex: 1;
+}
+
+.milestones-header-visual {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  max-width: 500px;
+}
+
+.achievement-svg {
+  width: 100%;
+  max-width: clamp(200px, 30vh, 350px);
+  height: auto;
+  color: var(--color-text);
+  opacity: 0.8;
+}
+
+.achievement-trophy-img {
+  width: 100%;
+  max-width: clamp(280px, 40vh, 460px);
+  height: auto;
+  object-fit: contain;
+  transition: filter 0.3s ease, transform 0.3s ease;
+  user-select: none;
+}
+
+.achievement-trophy-img.yellow-trophy {
+  filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.75)) saturate(1.4) brightness(1.05);
+  transform: scale(1.04);
+}
+
+.draw-path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw-svg-animation 6s ease-in-out infinite;
+}
+
+@keyframes draw-svg-animation {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+
+  35% {
+    stroke-dashoffset: 0;
+  }
+
+  65% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 1000;
+  }
+}
+
+.milestones-header h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, min(4vw, 5vh), 3rem);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-top: 0.5rem;
+  margin-bottom: clamp(0.5rem, 2vh, 1rem);
+}
+
+.milestones-lede {
+  color: var(--color-text-muted);
+  font-size: clamp(0.95rem, 1.5vh, 1.125rem);
+  line-height: 1.6;
+}
+
+.milestones-marquee-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  position: relative;
+  /* Faded edges for the marquee effect */
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  padding: 1rem 0;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+.milestones-marquee-container::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+.milestones-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 2rem;
+}
+
+.milestones-carousel-wrapper {
+  position: relative;
+}
+
+.milestones-controls {
+  position: absolute;
+  top: -80px;
+  right: 0px;
+  display: flex;
+  gap: 1rem;
+  z-index: 5;
+}
+
+.carousel-btn {
+  background: var(--color-bg);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+.carousel-btn:hover {
+  background: var(--color-text);
+  color: var(--color-bg);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .carousel-btn {
+  background: #1a1b15;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.milestones-card {
+  position: relative;
+  background-color: white;
+  padding: clamp(1.5rem, 3vh, 2.5rem);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  height: clamp(220px, 35vh, 280px); /* Changed min-height to clamp height */
+  width: clamp(280px, 30vw, 350px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.milestones-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+}
+
+/* Cards follow the theme: light card in light mode, dark card + light text in dark mode */
+.milestones-card {
+  background-color: #ffffff;
+  color: #14150f;
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+.milestones-card .milestones-card-content h3 { color: #14150f; }
+.milestones-card .milestones-card-content p  { color: #5e6056; }
+.milestones-card .milestones-card-icon       { color: #388476; }
+
+[data-theme="dark"] .milestones-card {
+  background-color: #1a1b15;
+  color: #f6f4f0;
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+[data-theme="dark"] .milestones-card:hover {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border-color: rgba(79, 181, 163, 0.35);
+}
+[data-theme="dark"] .milestones-card .milestones-card-content h3 { color: #f6f4f0; }
+[data-theme="dark"] .milestones-card .milestones-card-content p  { color: #b4b6ab; }
+[data-theme="dark"] .milestones-card .milestones-card-icon {
+  color: #4fb5a3;
+  background-color: rgba(79, 181, 163, 0.15);
+}
+
+.mobile-absolute-svg {
+  display: none;
+}
+
+.milestones-card-icon {
+  width: clamp(36px, 6vh, 48px);
+  height: clamp(36px, 6vh, 48px);
+  border-radius: 50%;
+  background-color: rgba(56, 132, 118, 0.1);
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: clamp(1rem, 2vh, 2rem);
+  z-index: 2;
+}
+
+.milestones-card-content {
+  z-index: 2;
+  position: relative;
+}
+
+.milestones-card-content h3 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 2.5vh, 2rem);
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+
+.milestones-card-content p {
+  color: var(--color-text-muted);
+  font-size: clamp(0.85rem, 1.2vh, 1rem);
+  line-height: 1.5;
+}
+
+.milestones-card-visual {
+  position: absolute;
+  bottom: -20%;
+  right: -10%;
+  width: 60%;
+  opacity: 0.4;
+  transition: opacity 0.3s ease, transform 0.5s ease;
+  z-index: 1;
+}
+
+.milestones-card:hover .milestones-card-visual {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.milestones-card-visual img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 1024px) {
+  .milestones-cards {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .milestones-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .milestones-section {
+    padding-top: calc(var(--nav-height, 60px) + 0.5rem); 
+    padding-bottom: 0;
+  }
+
+  .milestones-container {
+    margin: 0 auto; /* Prevents overflow from being hidden at the top/bottom */
+  }
+
+  .milestones-card {
+    padding: 1rem 1.25rem;
+    min-height: auto;
+    height: auto;
+  }
+
+  .milestones-card-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 0.5rem;
+  }
+
+  .milestones-header-wrapper {
+    margin-bottom: 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .milestones-header h2 {
+    font-size: clamp(1.8rem, 7vw, 2.5rem);
+    margin-bottom: 0.25rem;
+  }
+
+  .milestones-lede {
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
+  }
+
+  .milestones-header-visual.desktop-svg {
+    display: none;
+  }
+
+  /* Trophy sits in its own row BELOW the cards (it used to overlap the card text). */
+  .mobile-absolute-svg {
+    display: block;
+    position: absolute;
+    bottom: -1rem;
+    left: -1rem;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .mobile-absolute-svg .achievement-svg,
+  .mobile-absolute-svg .achievement-trophy-img {
+    width: clamp(84px, 26vw, 120px);
+    max-width: none;
+  }
+
+  .milestones-controls {
+    top: auto;
+    bottom: -20px;
+    right: 10px;
+  }
+
+  .milestones-carousel-wrapper {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* ─── Confetti Animation Styles ─── */
+
+.achievement-svg {
+  transition: all 0.3s ease;
+}
+
+.achievement-svg.yellow-trophy {
+  stroke: #e6b800 !important;
+  /* Elegant gold */
+}
+
+.achievement-svg.yellow-trophy .star-path {
+  fill: #ffd700 !important;
+  stroke: #e6b800 !important;
+}
+
+/* ─── Interactive Hand-Drawn Arrow Hint ─── */
+.interactive-hint {
+  position: absolute;
+  top: 15%;
+  /* Restored to avoid navbar */
+  left: -25%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  color: var(--color-text);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  z-index: 10;
+}
+
+.interactive-hint.visible {
+  opacity: 1;
+}
+
+.hint-text {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--color-accent, #388476);
+  transform: translateY(10px);
+  opacity: 0;
+  transition: all 0.5s ease 0.3s;
+}
+
+.interactive-hint.visible .hint-text {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.hand-drawn-arrow {
+  width: 90px;
+  height: auto;
+  color: var(--color-accent, #388476);
+  margin-right: -20px;
+}
+
+.arrow-line {
+  stroke-dasharray: 250;
+  stroke-dashoffset: 250;
+}
+
+.interactive-hint.visible .arrow-line {
+  animation: draw-arrow 0.8s ease forwards 0.5s;
+}
+
+@keyframes draw-arrow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .interactive-hint.mobile-hint {
+    top: 40%;
+    left: 100%;
+    /* Moved completely into the empty space on the right */
+    align-items: flex-start;
+  }
+
+  .mobile-hint .hint-text {
+    font-size: 1.2rem;
+    white-space: nowrap;
+  }
+
+  .mobile-hint .hand-drawn-arrow {
+    transform: scaleX(-1);
+    margin-right: 0;
+    margin-left: 10px;
+    width: 70px;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+/* Section heading text follows light / dark theme */
+.milestones-header h2 { color: var(--color-text); }
+.milestones-lede { color: var(--color-text-muted); }
+
+/* Short phones (e.g. 360x640): keep header + cards + trophy inside one screen */
+@media (max-width: 768px) and (max-height: 720px) {
+  .milestones-section {
+    padding-top: 4.5rem;
+  }
+
+  .milestones-header h2 {
+    font-size: 2.1rem;
+  }
+
+  .milestones-lede {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .milestones-container {
+    padding-bottom: 5rem;
+  }
+}
+
+/* ─── Bigger trophy on phones/tablets (was too small) ─── */
+@media (max-width: 1024px) {
+  .milestones-section { --trophy: clamp(200px, 55vw, 320px); }
+  .mobile-absolute-svg .achievement-svg,
+  .mobile-absolute-svg .achievement-trophy-img { width: var(--trophy); max-width: none; }
+  .milestones-container { padding-bottom: calc(var(--trophy) + 1rem); }
+}
+@media (max-width: 768px) and (max-height: 720px) {
+  .milestones-section { --trophy: 160px; }
+  .milestones-container { padding-bottom: calc(var(--trophy) + 0.5rem); }
+}
