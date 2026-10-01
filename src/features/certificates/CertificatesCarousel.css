@@ -1,0 +1,323 @@
+/* ================================================================
+   CertificatesCarousel.css — Pixel-perfect recreation
+================================================================ */
+
+.certificates-section {
+  position: relative;
+  isolation: isolate;
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  background-color: transparent;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: pan-y; 
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+/* Background washes */
+.cert-wash {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: 0;
+  pointer-events: none;
+}
+.cert-wash-left {
+  width: 600px;
+  height: 600px;
+  background: rgba(144, 175, 169, 0.15);
+  top: -100px;
+  left: -200px;
+}
+.cert-wash-right {
+  width: 800px;
+  height: 800px;
+  background: rgba(144, 175, 169, 0.2);
+  top: 100px;
+  right: -200px;
+}
+.cert-wash-bottom {
+  width: 1000px;
+  height: 400px;
+  background: rgba(144, 175, 169, 0.15);
+  bottom: -200px;
+  left: 10%;
+}
+
+[data-theme="dark"] .cert-wash-left { background: rgba(56, 132, 118, 0.1); }
+[data-theme="dark"] .cert-wash-right { background: rgba(56, 132, 118, 0.15); }
+[data-theme="dark"] .cert-wash-bottom { background: rgba(56, 132, 118, 0.1); }
+
+.cert-bg-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  object-fit: cover;
+  opacity: 0.9;
+}
+
+[data-theme="dark"] .cert-bg-frame {
+  opacity: 0.5;
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Layout Grid */
+.certificates-layout {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 40% 60%;
+  align-items: center;
+  min-height: 100svh;
+  padding: clamp(2rem, 5vh, 4rem) 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Left Column: Header ─── */
+.certificates-header-col {
+  padding-left: 10%;
+  max-width: 600px;
+}
+
+.cert-tag-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.step-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--color-accent);
+}
+
+.cert-tag-line {
+  width: 40px;
+  height: 1px;
+  background: var(--color-accent);
+}
+
+.certificates-header-col h2 {
+  font-size: clamp(3rem, 4vw, 4.5rem);
+  font-family: var(--font-serif);
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.certificates-header-col h2 em {
+  font-style: italic;
+  color: var(--color-accent);
+}
+
+.certificates-lede {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  max-width: 90%;
+}
+
+/* ─── Right Column: Canvas ─── */
+.certificates-canvas-col {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Handdrawn Decor */
+.cert-handdrawn-decor {
+  position: absolute;
+  top: 15%;
+  right: 15%;
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transform: rotate(-10deg);
+  z-index: 10;
+}
+
+.cert-handwritten-text {
+  font-family: 'Caveat', 'Dancing Script', cursive;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+/* Canvas & Cards */
+.certificates-canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1200px;
+  /* no preserve-3d here: cards are stacked by z-index so they never intersect each other */
+  cursor: grab;
+}
+
+.certificates-canvas:active {
+  cursor: grabbing;
+}
+
+.certificates-card-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260px;          /* real size is set in CertificatesCarousel.jsx (width + height) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: center center;
+  transform-style: flat;
+  backface-visibility: hidden;
+  transition: opacity 0.1s linear, z-index 0.1s step-start;
+}
+
+.certificates-card {
+  width: 100%;
+  height: 100%;          /* the wrapper's height is set per card in the JSX */
+  background-color: white;
+  border-radius: 12px;
+  padding: 8px;
+  transition: box-shadow 0.3s ease;
+}
+
+[data-theme="dark"] .certificates-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1px;
+}
+
+.certificates-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.certificates-card-text {
+  position: absolute;    /* hangs below the card so every card stays centred on the same line */
+  top: 100%;
+  left: 0;
+  margin-top: 1.2rem;
+  text-align: left;
+  width: 100%;
+}
+
+.certificates-card-text h3 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--color-text);
+  margin: 0 0 0.2rem 0;
+  font-weight: 500;
+}
+
+.certificates-card-text p {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* Interactive States */
+.certificates-card-wrapper.is-front .certificates-card-text h3 {
+  color: var(--color-text);
+}
+
+.certificates-card-wrapper:not(.is-front) .certificates-card-text h3 {
+  color: var(--color-text-muted);
+}
+.certificates-card-wrapper:not(.is-front) .certificates-card-text p {
+  opacity: 0.6;
+}
+
+/* Breakpoints */
+@media (max-width: 1440px) {
+  .certificates-card-wrapper { width: 230px; }
+  .cert-handdrawn-decor { top: 10%; right: 10%; }
+}
+
+@media (max-width: 1024px) {
+  .certificates-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    height: auto;
+    min-height: 100svh;
+    padding-top: clamp(6rem, 10vh, 8rem);
+  }
+  
+  .certificates-header-col {
+    padding: 0 1.5rem;
+    max-width: 100%;
+    text-align: center;
+  }
+  
+  .cert-tag-wrapper { justify-content: center; }
+  .certificates-lede { margin: 0 auto; }
+  
+  .certificates-canvas-col {
+    height: 70vh;
+  }
+  
+  .cert-handdrawn-decor {
+    top: 5%;
+    right: 5%;
+  }
+}
+
+@media (max-width: 768px) {
+  .certificates-card-wrapper { width: 220px; }
+  
+  .certificates-header-col h2 {
+    font-size: clamp(2.5rem, 8vw, 3rem);
+  }
+
+  .cert-handdrawn-decor {
+    display: none;
+  }
+  
+  .certificates-canvas-col {
+    margin-top: -3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .certificates-card-wrapper { width: 200px; }
+  
+  .certificates-canvas-col {
+    margin-top: -4rem;
+  }
+}
+
+/* ─── Slanted dashed transition line at section bottom ──────────────
+   Acts as a visual divider between Certificates and the next section. */
+.certificates-section {
+  --slant-tilt: -2.5deg;
+}
+@media (max-width: 1024px) { .certificates-section { --slant-tilt: -3deg; } }
+@media (max-width: 768px)  { .certificates-section { --slant-tilt: -3.5deg; } }
+@media (max-width: 480px)  { .certificates-section { --slant-tilt: -5deg; } }
+
+.certificates-section::after { content: none; display: none; }
+
+/* ─── Fixes: centred captions + "My Certificates" placement ─── */
+.certificates-card-text { text-align: center; left: 50%; width: 120%; transform: translateX(-50%); }
+.cert-handdrawn-decor { top: 15%; right: auto; left: 47%; }
+@media (max-width: 1024px) {
+  .cert-handdrawn-decor { top: 2%; left: auto; right: 6%; }
+  .cert-handwritten-text { font-size: 1.5rem; }
+}

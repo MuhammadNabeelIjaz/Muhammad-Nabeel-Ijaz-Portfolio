@@ -1,0 +1,306 @@
+.gallery-section {
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  padding: clamp(5rem, 12vh, 8rem) 2rem clamp(6rem, 12vh, 9rem);
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+}
+
+/* --- Animated Scroll Color Scattering Effects --- */
+.gallery-background-effects {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.color-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.5;
+  transition: top 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), left 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: top, left, transform;
+  mix-blend-mode: normal;
+}
+
+[data-theme="dark"] .color-blob {
+  mix-blend-mode: screen;
+  opacity: 0.35;
+}
+
+.blob-1 {
+  width: 1200px;
+  height: 1200px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.7) 0%, rgba(139, 92, 246, 0) 70%);
+  /* Violet */
+  left: calc(var(--scroll-progress, 0) * 120% - 600px);
+  top: calc(var(--scroll-progress, 0) * 120% - 600px);
+  transform: scale(calc(1 + var(--scroll-progress, 0) * 0.5));
+}
+
+.blob-2 {
+  width: 1000px;
+  height: 1000px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.7) 0%, rgba(56, 189, 248, 0) 70%);
+  /* Sky */
+  left: calc(var(--scroll-progress, 0) * 100% - 500px);
+  top: calc(var(--scroll-progress, 0) * 140% - 500px);
+  transform: scale(calc(1 + var(--scroll-progress, 0) * 0.2));
+}
+
+.blob-3 {
+  width: 1400px;
+  height: 1400px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.7) 0%, rgba(236, 72, 153, 0) 70%);
+  /* Pink */
+  left: calc(var(--scroll-progress, 0) * 140% - 700px);
+  top: calc(var(--scroll-progress, 0) * 100% - 700px);
+  transform: scale(calc(1 + var(--scroll-progress, 0) * 0.3));
+}
+
+.gallery-container {
+  width: 100%;
+  max-width: 1440px;
+  margin: auto; /* Centers the gallery vertically & safely */
+}
+
+.gallery-header {
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+  text-align: center;
+}
+
+.gallery-header h2 {
+  font-size: clamp(2rem, min(5vw, 6vh), 3.5rem);
+  margin-top: 1rem;
+  margin-bottom: clamp(0.5rem, 2vh, 1.5rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.gallery-lede {
+  font-size: clamp(0.95rem, 1.5vh, 1.125rem);
+  color: var(--color-text-muted);
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fade-in {
+  animation: fadeSlideIn 0.3s ease-out forwards;
+}
+
+/* --- 3D Radial Carousel Styles (Global) --- */
+.gallery-carousel-container {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: clamp(350px, 50vh, 500px);
+  margin-top: 1.5rem;
+  margin-bottom: 4rem;
+  overflow: visible;
+}
+
+.gallery-radial-canvas {
+  position: relative;
+  width: 100%;
+  height: clamp(350px, 50vh, 500px);
+  perspective: 1200px;
+  touch-action: pan-y;
+  /* allow vertical scroll, capture horizontal swipe */
+}
+
+.gallery-radial-card {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform-origin: center bottom;
+  width: clamp(160px, min(20vw, 35vh), 240px);
+  aspect-ratio: 270 / 360;
+  height: auto;
+  background-color: var(--color-bg);
+  border-radius: 24px;
+  padding: 12px 12px 18px 12px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+  transition: transform 1.2s ease-in-out, opacity 1.2s ease-in-out, z-index 1.2s step-start;
+  display: flex;
+  flex-direction: column;
+}
+
+[data-theme="dark"] .gallery-radial-card {
+  background-color: #1a1b15;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+}
+
+.gallery-radial-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 242 / 270;
+  object-fit: cover;
+  border-radius: 16px;
+  pointer-events: none;
+  transition: filter 0.5s ease;
+}
+
+.gallery-radial-info {
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.gallery-radial-info h3 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 2.5vh, 2.5rem);
+  color: var(--color-text);
+  text-align: center;
+}
+
+.gallery-radial-dock {
+  position: absolute;
+  bottom: -34px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 200;
+}
+
+.gallery-radial-btn-prev,
+.gallery-radial-btn-next {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery-radial-btn-prev {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+
+.gallery-radial-btn-next {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .gallery-radial-btn-next {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.gallery-pagination-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-text);
+  opacity: 0.2;
+  transition: all 0.3s ease;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.gallery-pagination-dot.active {
+  opacity: 1;
+  transform-origin: center;
+}
+
+
+
+/* Responsive adjustments */
+.gallery-header h2 {
+  margin-bottom: 1rem;
+}
+@media (max-width: 1024px) {
+  .gallery-header {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery-radial-dock {
+    bottom: -22px; /* Aligns with the dashed transition line on smaller viewports */
+  }
+}
+
+/* Close media query here */
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+
+/* Prev / Next buttons: explicit colours in both themes, always above the line */
+.gallery-radial-dock { z-index: 200; }
+.gallery-radial-btn-prev {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+}
+.gallery-radial-btn-next {
+  background-color: rgba(20, 21, 15, 0.08);
+  color: var(--color-text);
+}
+[data-theme="dark"] .gallery-radial-btn-prev {
+  background-color: #f6f4f0;
+  color: #14150f;
+}
+[data-theme="dark"] .gallery-radial-btn-next {
+  background-color: rgba(255, 255, 255, 0.14);
+  color: #f6f4f0;
+}
+.gallery-radial-btn-prev:hover,
+.gallery-radial-btn-next:hover { filter: brightness(1.08); }
+
+/* ─── Tighter vertical rhythm on tablets / phones ─── */
+@media (max-width: 1024px) {
+  .gallery-section { padding-top: clamp(4.5rem, 9vh, 6rem); padding-bottom: clamp(4rem, 8vh, 6rem); }
+  .gallery-carousel-container,
+  .gallery-radial-canvas { height: clamp(270px, 36vh, 380px); }
+  .gallery-carousel-container { margin-top: 0; margin-bottom: 3.25rem; }
+  .gallery-radial-card { top: 36%; }
+}
+@media (max-width: 768px) {
+  .gallery-section {
+    padding-top: calc(var(--nav-height, 60px) + 3.5rem);
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+  .gallery-carousel-container,
+  .gallery-radial-canvas { height: clamp(320px, 40vh, 400px); }
+  .gallery-carousel-container { margin-bottom: 3rem; margin-top: 1.5rem; }
+  .gallery-radial-card { top: 45%; }
+}
